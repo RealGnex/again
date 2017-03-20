@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 class Punkt {
-    
+
     public double x, y;
     public Punkt(double x, double y) {
         this.x = x; this.y = y;
@@ -30,5 +30,24 @@ public class Main {
             punkty.add(new Punkt(podanyX,podanyY));
             System.out.println("Punkt numer " + (i+1) + " został dodany!");
         }
+    }
+
+    private static double[] ilorazRoznicowy(ArrayList<Punkt> punkty) {
+        final int dlugosc = punkty.size();
+        double[][] ilorazy = new double[dlugosc][]; //tworzenie kolumn
+        //tworzenie wierszy
+        for (int i = 0; i < dlugosc; i++)
+            ilorazy[i] = new double[dlugosc-i];
+        //ustawienie pierwszego wiersza
+        for (int i = 0; i < dlugosc; i++)
+            ilorazy[i][0] = punkty.get(i).y;
+        //wypełnianie reszty wierszy
+        for (int i = 1; i < dlugosc; i++) {
+            for (int j = 0; j < dlugosc - i; j++) {
+                ilorazy[j][i] = (ilorazy[j+1][i-1] - ilorazy[j][i-1]);
+            }
+        }
+        double[] wiersz = ilorazy[0];
+        return wiersz;
     }
 }
