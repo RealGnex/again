@@ -21,7 +21,6 @@ public class Main {
 
         System.out.println("Ile punktów chcesz wprowadzić?");
         iloscPunktow = Integer.parseInt(sc.nextLine());
-
         for (int i = 0; i < iloscPunktow; i++) {
             System.out.println("Podaj wartość X:");
             podanyX = Double.parseDouble(sc.nextLine());
@@ -30,6 +29,10 @@ public class Main {
             punkty.add(new Punkt(podanyX,podanyY));
             System.out.println("Punkt numer " + (i+1) + " został dodany!");
         }
+        System.out.println("Szukany X? :");
+        double[] szukanyX = new double[1];
+        szukanyX[0] = Double.parseDouble(sc.nextLine());
+        interpolacjaNewtona(szukanyX,punkty);
     }
 
     private static double[] ilorazRoznicowy(ArrayList<Punkt> punkty) {
@@ -44,10 +47,23 @@ public class Main {
         //wypełnianie reszty wierszy
         for (int i = 1; i < dlugosc; i++) {
             for (int j = 0; j < dlugosc - i; j++) {
-                ilorazy[j][i] = (ilorazy[j+1][i-1] - ilorazy[j][i-1]);
+                ilorazy[j][i] = ((ilorazy[j+1][i-1] - ilorazy[j][i-1])
+                        / (punkty.get(i+j).x - punkty.get(j).x));
             }
         }
         double[] wiersz = ilorazy[0];
         return wiersz;
     }
+
+    private static void interpolacjaNewtona(double[] szukanyX, ArrayList<Punkt> punkty) {
+        final int iloscPunktow = punkty.size();
+        double[] ilorazy = ilorazRoznicowy(punkty);
+        double y = ilorazy[iloscPunktow-1];
+        for (int i = 0; i < szukanyX.length; i++) {
+            for (int j = iloscPunktow - 2; j >= 0; j--)
+                y = y * (szukanyX[i] - punkty.get(j).x) + ilorazy[j];
+            System.out.println("Interpolacja w punkcie " + szukanyX[i] + " to " + y);
+            }
+        }
+
 }
